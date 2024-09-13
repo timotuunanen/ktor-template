@@ -1,0 +1,31 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>myApp.log</file>
+
+        <encoder>
+            <pattern>%date AUDIT %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>localhost</syslogHost>
+        <facility>USER</facility>
+        <port>5514</port>
+        <suffixPattern>AUDIT %msg</suffixPattern>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <logger name="com.tt.plugins.AuditLog" additivity="false">
+        <appender-ref ref="SYSLOG" />
+    </logger>
+    <logger name="org.eclipse.jetty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
+</configuration>

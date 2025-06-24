@@ -14,7 +14,7 @@ data class Company(
     @Serializable(with = OffsetDateTimeSerializer::class)
     val updatedAt: OffsetDateTime = OffsetDateTime.now(),
     val name: String,
-    val status: Status = Status.NO_STATUS
+    val status: Status = Status.NO_STATUS,
 ) {
     enum class Status {
         ACTIVE,
@@ -25,6 +25,6 @@ data class Company(
         RESTRUCTURING,
         ACTIVITY_ENDED,
         ACTIVITY_PAUSED,
-        NO_STATUS // null from the source / not received
+        NO_STATUS, // null from the source / not received
     }
 }

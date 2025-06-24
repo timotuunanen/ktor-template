@@ -21,9 +21,8 @@ import org.jooq.DSLContext
 class CompanyService(
     private val companyRepository: CompanyRepository,
     private val testClient: TestClient,
-    dslContext: DSLContext
+    dslContext: DSLContext,
 ) : Transactional(dslContext) {
-
     suspend fun getCompany(businessId: BusinessId): Either<Failure, Company> =
         either {
             catch(
@@ -31,7 +30,7 @@ class CompanyService(
                     ensure(fetchDummyData(businessId).value == 1) { SomeFailure("Value is not 1") }
                     ensureNotNull(companyRepository.getCompany(dsl, businessId)) { NotFoundFailure("Company $businessId doesn't exist") }
                 },
-                { raise(DbFailure(it)) }
+                { raise(DbFailure(it)) },
             )
         }
 
@@ -39,7 +38,7 @@ class CompanyService(
         either {
             catch(
                 { companyRepository.getCompanies(dsl).filter { it.status == status } },
-                { raise(DbFailure(it)) }
+                { raise(DbFailure(it)) },
             )
         }
 
@@ -47,7 +46,7 @@ class CompanyService(
         either {
             catch(
                 { companyRepository.insertCompany(dsl, company).let { "Company stored correctly" } },
-                { raise(DbFailure(it)) }
+                { raise(DbFailure(it)) },
             )
         }
 
@@ -55,7 +54,7 @@ class CompanyService(
         either {
             catch(
                 { companyRepository.upsertCompany(dsl, company).let { "Company stored correctly" } },
-                { raise(DbFailure(it)) }
+                { raise(DbFailure(it)) },
             )
         }
 
@@ -63,14 +62,14 @@ class CompanyService(
         either {
             catch(
                 { companyRepository.delete(dsl, businessId).let { "Company deleted successfully" } },
-                { raise(DbFailure(it)) }
+                { raise(DbFailure(it)) },
             )
         }
 
-    context(Raise<Failure>)
+    context(rc: Raise<Failure>)
     private suspend fun fetchDummyData(businessId: BusinessId): TestReply =
         catch(
             { testClient.testFetch(businessId) },
-            { raise(TestClientFailure(it)) }
+            { rc.raise(TestClientFailure(it)) },
         )
 }

@@ -22,7 +22,9 @@ import org.koin.ktor.plugin.Koin
 
 private val logger = KotlinLogging.logger {}
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>): Unit =
+    io.ktor.server.netty.EngineMain
+        .main(args)
 
 fun Application.module(engine: HttpClientEngine = OkHttp.create()) {
     configureCors()

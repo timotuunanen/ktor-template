@@ -12,24 +12,26 @@ import org.koin.core.component.inject
 import org.koin.dsl.module
 import javax.sql.DataSource
 
-val myDb = module {
-    single<DataSource> { createHikariDataSource(get(), get()) }
-    single { initDsl(get()) }
-}
+val myDb =
+    module {
+        single<DataSource> { createHikariDataSource(get(), get()) }
+        single { initDsl(get()) }
+    }
 
 private fun buildFlyway(dataSource: DataSource) = Flyway.configure().dataSource(dataSource).load()
 
-fun migrateDatabase(): MigrateResult = object : KoinComponent {
-    val dataSource: DataSource by inject()
-    fun migrate() = buildFlyway(dataSource).migrate()
-}.migrate()
+fun migrateDatabase(): MigrateResult =
+    object : KoinComponent {
+        val dataSource: DataSource by inject()
 
-fun initDsl(ds: DataSource): DSLContext =
-    DSL.using(ds, SQLDialect.POSTGRES)
+        fun migrate() = buildFlyway(dataSource).migrate()
+    }.migrate()
+
+fun initDsl(ds: DataSource): DSLContext = DSL.using(ds, SQLDialect.POSTGRES)
 
 private fun createHikariDataSource(
     config: DbConfigProps,
-    retryConfig: RetryConfigProps
+    retryConfig: RetryConfigProps,
 ): DataSource {
     var retries = 0
 

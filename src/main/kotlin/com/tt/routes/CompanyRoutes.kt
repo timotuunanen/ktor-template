@@ -19,13 +19,20 @@ import mu.KotlinLogging
 import org.koin.ktor.ext.inject
 
 @Resource("/company")
-class CompanyRoute(val businessId: BusinessId? = "") {
-
+class CompanyRoute(
+    val businessId: BusinessId? = "",
+) {
     @Resource("/by_status")
-    class ByStatus(val parent: CompanyRoute = CompanyRoute(businessId = null), val status: Company.Status)
+    class ByStatus(
+        val parent: CompanyRoute = CompanyRoute(businessId = null),
+        val status: Company.Status,
+    )
 
     @Resource("{id}")
-    class Id(val parent: CompanyRoute = CompanyRoute(businessId = null), val id: String)
+    class Id(
+        val parent: CompanyRoute = CompanyRoute(businessId = null),
+        val id: String,
+    )
 }
 
 private val logger = KotlinLogging.logger {}
@@ -38,9 +45,9 @@ fun Application.companyRouting() {
             post<CompanyRoute> {
                 call.makeResponse(
                     companyService.insertCompany(
-                        call.receive<Company>()
+                        call.receive<Company>(),
                     ),
-                    HttpStatusCode.Created
+                    HttpStatusCode.Created,
                 )
             }
             delete<CompanyRoute.Id> {
@@ -49,7 +56,7 @@ fun Application.companyRouting() {
             put<CompanyRoute> {
                 call.makeResponse(
                     companyService.upsertCompany(call.receive<Company>()),
-                    HttpStatusCode.Created
+                    HttpStatusCode.Created,
                 )
             }
             get<CompanyRoute> {

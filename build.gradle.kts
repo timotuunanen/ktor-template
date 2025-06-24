@@ -2,28 +2,27 @@ import dev.monosoul.jooq.RecommendedVersions
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val ktor_version = "2.3.11"
-val kotlin_version = "1.9.10"
-val logback_version = "1.4.14"
-val postgresql_version = "42.7.3"
-val hikaricp_version = "5.0.1"
-val jackson_version = "2.15.1"
-val flyway_version = "10.13.0"
-val testcontainers_version = "1.19.7"
-val kotest_version = "5.7.2"
-val kotest_version_arrow = "1.4.0"
-val mockk_version = "1.13.12"
-val arrow_kt_version = "1.2.0"
+val ktorVersion = "2.3.11"
+val logbackVersion = "1.4.14"
+val postgresqlVersion = "42.7.3"
+val hikaricpVersion = "5.0.1"
+val jacksonVersion = "2.15.1"
+val flywayVersion = "10.13.0"
+val testcontainersVersion = "1.19.7"
+val kotestVersion = "5.7.2"
+val kotestVersionArrow = "1.4.0"
+val mockkVersion = "1.13.12"
+val arrowKtVersion = "1.2.0"
 
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.2.0"
     id("io.ktor.plugin") version "2.3.4"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
     id("dev.monosoul.jooq-docker") version "5.0.6"
     id("java")
     id("org.flywaydb.flyway") version "9.22.0"
     id("com.avast.gradle.docker-compose") version "0.17.4"
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.1"
+    id("org.jmailen.kotlinter") version "5.1.1"
 }
 
 group = "com.tt"
@@ -33,9 +32,10 @@ application {
     mainClass.set("com.tt.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf(
-        "-Dio.ktor.development=$isDevelopment",
-    )
+    applicationDefaultJvmArgs =
+        listOf(
+            "-Dio.ktor.development=$isDevelopment",
+        )
 }
 
 repositories {
@@ -44,67 +44,67 @@ repositories {
 
 dependencies {
     // Ktor server
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-resources:$ktor_version")
-    implementation("io.ktor:ktor-server-cors:$ktor_version")
-    implementation("io.ktor:ktor-server-auth:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
-    implementation("io.ktor:ktor-server-sessions-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-hsts-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-default-headers-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-status-pages:$ktor_version")
+    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-resources:$ktorVersion")
+    implementation("io.ktor:ktor-server-cors:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-sessions-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-hsts-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-default-headers-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.insert-koin:koin-ktor:3.4.3")
 
     // Ktor client
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-client-resources:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
-    implementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
-    implementation("io.ktor:ktor-client-auth:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-resources:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-client-auth:$ktorVersion")
 
     // Db
-    implementation("org.postgresql:postgresql:$postgresql_version")
-    implementation("com.zaxxer:HikariCP:$hikaricp_version")
-    implementation("org.flywaydb:flyway-core:$flyway_version")
-    implementation("org.flywaydb:flyway-database-postgresql:$flyway_version")
+    implementation("org.postgresql:postgresql:$postgresqlVersion")
+    implementation("com.zaxxer:HikariCP:$hikaricpVersion")
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
 
     // Jooq
     implementation("org.jooq:jooq:${RecommendedVersions.JOOQ_VERSION}")
     implementation("org.jooq:jooq-meta:${RecommendedVersions.JOOQ_VERSION}")
     implementation("org.jooq:jooq-codegen:${RecommendedVersions.JOOQ_VERSION}")
     implementation("org.jooq:jooq-kotlin-coroutines:${RecommendedVersions.JOOQ_VERSION}")
-    jooqCodegen("org.postgresql:postgresql:$postgresql_version")
+    jooqCodegen("org.postgresql:postgresql:$postgresqlVersion")
 
     // Other
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     // Arrow.kt
-    implementation("io.arrow-kt:arrow-core:$arrow_kt_version")
-    implementation("io.arrow-kt:arrow-fx-coroutines:$arrow_kt_version")
+    implementation("io.arrow-kt:arrow-core:$arrowKtVersion")
+    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowKtVersion")
 
     // Xml parsing
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jackson_version")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.0")
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.testcontainers:junit-jupiter:$testcontainers_version")
-    testImplementation("org.testcontainers:testcontainers:$testcontainers_version")
-    testImplementation("org.testcontainers:postgresql:$testcontainers_version")
-    testImplementation("io.kotest:kotest-runner-junit5:$kotest_version")
-    testImplementation("io.kotest:kotest-framework-datatest:$kotest_version")
-    testImplementation("io.kotest.extensions:kotest-assertions-arrow:$kotest_version_arrow")
-    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
-    testImplementation("io.mockk:mockk:$mockk_version")
-    testImplementation("io.ktor:ktor-client-mock:$ktor_version")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    testImplementation("org.testcontainers:postgresql:$testcontainersVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-framework-datatest:$kotestVersion")
+    testImplementation("io.kotest.extensions:kotest-assertions-arrow:$kotestVersionArrow")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
 }
 
 dockerCompose {
@@ -132,7 +132,7 @@ tasks {
         outputSchemaToDefault.add("public")
         schemaToPackageMapping.put("public", "tt")
         usingJavaConfig {
-            /* "this" here is the org.jooq.meta.jaxb.Generator configure it as you please */
+            // "this" here is the org.jooq.meta.jaxb.Generator configure it as you please
         }
     }
     named("run") {
@@ -160,7 +160,7 @@ tasks {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.set(listOf("-Xcontext-receivers"))
+        freeCompilerArgs.set(listOf("-Xcontext-parameters"))
         jvmTarget.set(JvmTarget.JVM_21)
     }
     sourceSets.all {

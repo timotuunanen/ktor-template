@@ -31,8 +31,10 @@ fun Application.installAuthentication() {
     }
 }
 
-private fun checkBasicCredentials(username: String, password: String, basicAuthenticationProps: BasicAuthenticationProps): Boolean =
-    username == basicAuthenticationProps.username && password == basicAuthenticationProps.password
+private fun checkBasicCredentials(
+    username: String,
+    password: String,
+    basicAuthenticationProps: BasicAuthenticationProps,
+): Boolean = username == basicAuthenticationProps.username && password == basicAuthenticationProps.password
 
-fun Route.checkBasicAuthenticated(build: Route.() -> Unit): Route =
-    authenticate(BASIC_AUTH, build = build)
+fun Route.checkBasicAuthenticated(build: Route.() -> Unit): Route = authenticate(BASIC_AUTH, build = build)

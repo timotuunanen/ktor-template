@@ -7,14 +7,17 @@ import java.util.Properties
 
 private val logger = KotlinLogging.logger {}
 
-fun readConfiguration(config: ApplicationConfig) = module {
-    single { RetryConfigProps(config) }
-    single { DbConfigProps(config) }
-    single { BasicAuthenticationProps(config) }
-    single { TestClientProps(config) }
-}
+fun readConfiguration(config: ApplicationConfig) =
+    module {
+        single { RetryConfigProps(config) }
+        single { DbConfigProps(config) }
+        single { BasicAuthenticationProps(config) }
+        single { TestClientProps(config) }
+    }
 
-class RetryConfigProps(config: ApplicationConfig) {
+class RetryConfigProps(
+    config: ApplicationConfig,
+) {
     val maxRetries: Int
     val retryInterval: Long
 
@@ -26,15 +29,20 @@ class RetryConfigProps(config: ApplicationConfig) {
     }
 }
 
-class DbConfigProps(private val config: ApplicationConfig) {
-    fun getConfig(): Properties = Properties().apply {
-        config.config("ktor.datasource").toMap().forEach {
-            setProperty(it.key, it.value.toString())
+class DbConfigProps(
+    private val config: ApplicationConfig,
+) {
+    fun getConfig(): Properties =
+        Properties().apply {
+            config.config("ktor.datasource").toMap().forEach {
+                setProperty(it.key, it.value.toString())
+            }
         }
-    }
 }
 
-class BasicAuthenticationProps(config: ApplicationConfig) {
+class BasicAuthenticationProps(
+    config: ApplicationConfig,
+) {
     val username: String
     val password: String
 
@@ -46,7 +54,9 @@ class BasicAuthenticationProps(config: ApplicationConfig) {
     }
 }
 
-class TestClientProps(config: ApplicationConfig) {
+class TestClientProps(
+    config: ApplicationConfig,
+) {
     val username: String
     val password: String
     val url: String
@@ -62,7 +72,9 @@ class TestClientProps(config: ApplicationConfig) {
     }
 }
 
-class KtorProps(config: ApplicationConfig) {
+class KtorProps(
+    config: ApplicationConfig,
+) {
     val environment: String
 
     init {

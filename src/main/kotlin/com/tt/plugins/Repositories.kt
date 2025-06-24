@@ -3,6 +3,7 @@ package com.tt.plugins
 import com.tt.repositories.CompanyRepository
 import org.koin.dsl.module
 
-val myRepositories = module {
-    single { CompanyRepository() }
-}
+val myRepositories =
+    module {
+        single { CompanyRepository() }
+    }

@@ -48,97 +48,108 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
-class ApplicationTest : FunSpec(
-    {
-        val user = "postgres"
-        val pass = "postgres"
+class ApplicationTest :
+    FunSpec(
+        {
+            val user = "postgres"
+            val pass = "postgres"
 
-        val postgres = PostgreSQLContainer<Nothing>("postgres:14.1").apply {
-            withUsername(user)
-            withPassword(pass)
-        }
+            val postgres =
+                PostgreSQLContainer<Nothing>("postgres:14.1").apply {
+                    withUsername(user)
+                    withPassword(pass)
+                }
 
-        val mockEngine = MockEngine { request ->
-            when (request.url.encodedPath) {
-                "/testurl/test/12345-1" -> respond(
-                    content = "{\"value\": 1}",
-                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                )
-                else -> respond(
-                    content = "{\"value\": 1}",
-                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                )
-            }
-        }
-
-        val engine = ktor(
-            mockEngine = mockEngine,
-            extraProperties = {
-                put(
-                    "ktor.datasource.jdbcUrl",
-                    "jdbc:postgresql://${postgres.host}:${postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)}/"
-                )
-                put("ktor.datasource.username", user)
-                put("ktor.datasource.password", pass)
-            },
-            postgres = postgres,
-            userName = user,
-            passWd = pass
-        )
-
-        fun getClient() = engine.client.config {
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        @OptIn(ExperimentalSerializationApi::class)
-                        namingStrategy = JsonNamingStrategy.SnakeCase
+            val mockEngine =
+                MockEngine { request ->
+                    when (request.url.encodedPath) {
+                        "/testurl/test/12345-1" ->
+                            respond(
+                                content = "{\"value\": 1}",
+                                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                            )
+                        else ->
+                            respond(
+                                content = "{\"value\": 1}",
+                                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                            )
                     }
+                }
+
+            val engine =
+                ktor(
+                    mockEngine = mockEngine,
+                    extraProperties = {
+                        put(
+                            "ktor.datasource.jdbcUrl",
+                            "jdbc:postgresql://${postgres.host}:${postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)}/",
+                        )
+                        put("ktor.datasource.username", user)
+                        put("ktor.datasource.password", pass)
+                    },
+                    postgres = postgres,
+                    userName = user,
+                    passWd = pass,
                 )
-            }
-            install(Resources)
-        }
 
-        test("testCompanyFlow") {
-            val client = getClient()
-            val businessId = client.postCompany()
+            fun getClient() =
+                engine.client.config {
+                    install(ContentNegotiation) {
+                        json(
+                            Json {
+                                prettyPrint = true
+                                @OptIn(ExperimentalSerializationApi::class)
+                                namingStrategy = JsonNamingStrategy.SnakeCase
+                            },
+                        )
+                    }
+                    install(Resources)
+                }
 
-            client.get(CompanyRoute(businessId = businessId)) {
-                basicAuthForTest()
-            }.apply {
-                status shouldBe HttpStatusCode.OK
-                println(bodyAsText())
-                val company = call.body<Company>()
-                company.name shouldBe "Test company"
-                company.businessId shouldBe businessId
-                company.createdAt shouldNotBe null
-                company.updatedAt shouldNotBe null
-            }
+            test("testCompanyFlow") {
+                val client = getClient()
+                val businessId = client.postCompany()
 
-            client.get(CompanyRoute(businessId = "bad")) {
-                basicAuthForTest()
-            }.apply {
-                status shouldBe HttpStatusCode.NotFound
-            }
+                client
+                    .get(CompanyRoute(businessId = businessId)) {
+                        basicAuthForTest()
+                    }.apply {
+                        status shouldBe HttpStatusCode.OK
+                        println(bodyAsText())
+                        val company = call.body<Company>()
+                        company.name shouldBe "Test company"
+                        company.businessId shouldBe businessId
+                        company.createdAt shouldNotBe null
+                        company.updatedAt shouldNotBe null
+                    }
 
-            client.delete(CompanyRoute.Id(id = businessId)) {
-                basicAuthForTest()
-            }.apply {
-                status shouldBe HttpStatusCode.OK
-            }
+                client
+                    .get(CompanyRoute(businessId = "bad")) {
+                        basicAuthForTest()
+                    }.apply {
+                        status shouldBe HttpStatusCode.NotFound
+                    }
 
-            client.get(CompanyRoute(businessId = businessId)) {
-                basicAuthForTest()
-            }.apply {
-                status shouldBe HttpStatusCode.NotFound
+                client
+                    .delete(CompanyRoute.Id(id = businessId)) {
+                        basicAuthForTest()
+                    }.apply {
+                        status shouldBe HttpStatusCode.OK
+                    }
+
+                client
+                    .get(CompanyRoute(businessId = businessId)) {
+                        basicAuthForTest()
+                    }.apply {
+                        status shouldBe HttpStatusCode.NotFound
+                    }
             }
-        }
-    }
-)
+        },
+    )
 
 suspend fun HttpClient.postCompany(
     businessId: BusinessId = "12345-1",
-    name: String = "Test company"
+    name: String = "Test company",
 ): String {
     post(CompanyRoute()) {
         basicAuthForTest()
@@ -156,7 +167,7 @@ fun DslDrivenSpec.ktor(
     mockEngine: MockEngine,
     postgres: PostgreSQLContainer<Nothing>,
     userName: String,
-    passWd: String
+    passWd: String,
 ): TestApplicationEngine {
     register(
         object : TestListener {
@@ -169,7 +180,10 @@ fun DslDrivenSpec.ktor(
                 }
             }
 
-            override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+            override suspend fun afterEach(
+                testCase: TestCase,
+                result: TestResult,
+            ) {
                 super.afterEach(testCase, result)
                 HikariDataSource(
                     HikariConfig().apply {
@@ -178,7 +192,7 @@ fun DslDrivenSpec.ktor(
                         password = passWd
                         jdbcUrl =
                             "jdbc:postgresql://${postgres.host}:${postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)}/"
-                    }
+                    },
                 ).run {
                     DSL.using(this, SQLDialect.POSTGRES).apply {
                         truncate(org.jooq.generated.tt.tables.Company.COMPANY).cascade().execute()
@@ -190,12 +204,13 @@ fun DslDrivenSpec.ktor(
                 engine.stop(1000, 1000)
                 postgres.stop()
             }
-        }
+        },
     )
     return engine
 }
 
 fun createEngine() = TestEngine.create(createTestEnvironment()) {}
+
 private fun Application.setApplicationProperties(extraProperties: MapApplicationConfig.() -> Unit) {
     (environment.config as MapApplicationConfig).apply {
         put("ktor.datasource.driverClassName", "org.postgresql.Driver")
@@ -214,5 +229,4 @@ private fun Application.setApplicationProperties(extraProperties: MapApplication
     }
 }
 
-fun HttpRequestBuilder.basicAuthForTest(): Unit =
-    header(HttpHeaders.Authorization, "Basic ${"username:password".encodeBase64()}")
+fun HttpRequestBuilder.basicAuthForTest(): Unit = header(HttpHeaders.Authorization, "Basic ${"username:password".encodeBase64()}")

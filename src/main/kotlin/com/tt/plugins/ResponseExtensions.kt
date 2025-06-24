@@ -13,7 +13,7 @@ val clientResponseLogger = KotlinLogging.logger {}
 suspend inline fun <reified T> ApplicationCall.makeResponse(
     result: Either<Failure, T>,
     httpStatusCode: HttpStatusCode = HttpStatusCode.OK,
-    logFailureAsError: Boolean = true
+    logFailureAsError: Boolean = true,
 ) {
     result.onLeft {
         logFailure(it, logFailureAsError)
@@ -25,15 +25,17 @@ suspend inline fun <reified T> ApplicationCall.makeResponse(
     }
 }
 
-fun ApplicationCall.logFailure(failure: Failure, logFailureAsError: Boolean = true) =
-    if (logFailureAsError) {
-        clientResponseLogger.error(
-            "Responding failure to ${request.uri} msg: " + failure.message +
-                if (failure.cause != null) " cause: " + failure.cause else ""
-        )
-    } else {
-        clientResponseLogger.info(
-            "Responding failure to ${request.uri} msg: " + failure.message +
-                if (failure.cause != null) " cause: " + failure.cause else ""
-        )
-    }
+fun ApplicationCall.logFailure(
+    failure: Failure,
+    logFailureAsError: Boolean = true,
+) = if (logFailureAsError) {
+    clientResponseLogger.error(
+        "Responding failure to ${request.uri} msg: " + failure.message +
+            if (failure.cause != null) " cause: " + failure.cause else "",
+    )
+} else {
+    clientResponseLogger.info(
+        "Responding failure to ${request.uri} msg: " + failure.message +
+            if (failure.cause != null) " cause: " + failure.cause else "",
+    )
+}

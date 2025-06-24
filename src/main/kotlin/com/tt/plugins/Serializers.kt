@@ -18,18 +18,18 @@ import java.time.OffsetDateTime
 object OffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
     override val descriptor = PrimitiveSerialDescriptor("OffsetDateTime", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): OffsetDateTime {
-        return OffsetDateTime.parse(decoder.decodeString())
-    }
+    override fun deserialize(decoder: Decoder): OffsetDateTime = OffsetDateTime.parse(decoder.decodeString())
 
-    override fun serialize(encoder: Encoder, value: OffsetDateTime) {
+    override fun serialize(
+        encoder: Encoder,
+        value: OffsetDateTime,
+    ) {
         encoder.encodeString(value.toInstant().toString())
     }
 }
 
 @OptIn(ExperimentalSerializationApi::class)
 object BigDecimalSerializer : KSerializer<BigDecimal> {
-
     override val descriptor = PrimitiveSerialDescriptor("java.math.BigDecimal", PrimitiveKind.DOUBLE)
 
     /**
@@ -38,7 +38,11 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
      */
     override fun deserialize(decoder: Decoder): BigDecimal =
         when (decoder) {
-            is JsonDecoder -> decoder.decodeJsonElement().jsonPrimitive.content.toBigDecimal()
+            is JsonDecoder ->
+                decoder
+                    .decodeJsonElement()
+                    .jsonPrimitive.content
+                    .toBigDecimal()
             else -> decoder.decodeString().toBigDecimal()
         }
 
@@ -47,21 +51,24 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
      *
      * Otherwise, [value] is encoded using encodes using [Encoder.encodeString].
      */
-    override fun serialize(encoder: Encoder, value: BigDecimal) =
-        when (encoder) {
-            is JsonEncoder -> encoder.encodeJsonElement(JsonUnquotedLiteral(value.toPlainString()))
-            else -> encoder.encodeString(value.toPlainString())
-        }
+    override fun serialize(
+        encoder: Encoder,
+        value: BigDecimal,
+    ) = when (encoder) {
+        is JsonEncoder -> encoder.encodeJsonElement(JsonUnquotedLiteral(value.toPlainString()))
+        else -> encoder.encodeString(value.toPlainString())
+    }
 }
 
 object LocalDateSerializer : KSerializer<LocalDate> {
     override val descriptor = PrimitiveSerialDescriptor("LocalDate", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): LocalDate {
-        return LocalDate.parse(decoder.decodeString())
-    }
+    override fun deserialize(decoder: Decoder): LocalDate = LocalDate.parse(decoder.decodeString())
 
-    override fun serialize(encoder: Encoder, value: LocalDate) {
+    override fun serialize(
+        encoder: Encoder,
+        value: LocalDate,
+    ) {
         encoder.encodeString(value.toString())
     }
 }
@@ -69,11 +76,12 @@ object LocalDateSerializer : KSerializer<LocalDate> {
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
     override val descriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): LocalDateTime {
-        return LocalDateTime.parse(decoder.decodeString())
-    }
+    override fun deserialize(decoder: Decoder): LocalDateTime = LocalDateTime.parse(decoder.decodeString())
 
-    override fun serialize(encoder: Encoder, value: LocalDateTime) {
+    override fun serialize(
+        encoder: Encoder,
+        value: LocalDateTime,
+    ) {
         encoder.encodeString(value.toString())
     }
 }

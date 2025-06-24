@@ -10,7 +10,12 @@ private val logger = KotlinLogging.logger {}
 
 fun Application.configureCors() {
     install(CORS) {
-        val allowedHost = this@configureCors.environment.config.config("ktor.cors").property("allowedHost").getString()
+        val allowedHost =
+            this@configureCors
+                .environment.config
+                .config("ktor.cors")
+                .property("allowedHost")
+                .getString()
         logger.info("allowedHost: $allowedHost")
         allowNonSimpleContentTypes = true
         allowMethod(HttpMethod.Put)

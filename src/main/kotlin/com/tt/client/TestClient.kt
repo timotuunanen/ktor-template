@@ -20,44 +20,47 @@ import kotlinx.serialization.json.Json
 fun HttpClientConfig<*>.configureLogging(logging: String) =
     install(Logging) {
         logger = Logger.DEFAULT
-        level = when (logging) {
-            "ALL" -> LogLevel.ALL
-            "BODY" -> LogLevel.BODY
-            "HEADERS" -> LogLevel.HEADERS
-            "INFO" -> LogLevel.INFO
-            else -> LogLevel.NONE
-        }
+        level =
+            when (logging) {
+                "ALL" -> LogLevel.ALL
+                "BODY" -> LogLevel.BODY
+                "HEADERS" -> LogLevel.HEADERS
+                "INFO" -> LogLevel.INFO
+                else -> LogLevel.NONE
+            }
     }
 
 @Serializable
 data class TestReply(
-    val value: Int
+    val value: Int,
 )
 
 class TestClient(
     private val props: TestClientProps,
-    engine: HttpClientEngine
+    engine: HttpClientEngine,
 ) {
-    private val client: HttpClient = HttpClient(engine) {
-        expectSuccess = true
-        configureLogging(props.logging)
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    ignoreUnknownKeys = true
-                    encodeDefaults = true
-                    prettyPrint = true
-                }
-            )
+    private val client: HttpClient =
+        HttpClient(engine) {
+            expectSuccess = true
+            configureLogging(props.logging)
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                        encodeDefaults = true
+                        prettyPrint = true
+                    },
+                )
+            }
         }
-    }
 
     suspend fun testFetch(businessId: BusinessId): TestReply =
-        client.get(props.url) {
-            url {
-                appendPathSegments(TEST, businessId)
-            }
-        }.body<TestReply>()
+        client
+            .get(props.url) {
+                url {
+                    appendPathSegments(TEST, businessId)
+                }
+            }.body<TestReply>()
 
     companion object {
         const val TEST = "test"

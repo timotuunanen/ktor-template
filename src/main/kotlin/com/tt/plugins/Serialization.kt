@@ -17,7 +17,7 @@ fun Application.configureSerialization() {
                 namingStrategy = JsonNamingStrategy.SnakeCase
                 ignoreUnknownKeys = true
                 encodeDefaults = true
-            }
+            },
         )
     }
 }

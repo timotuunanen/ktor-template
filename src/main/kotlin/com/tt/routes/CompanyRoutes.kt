@@ -5,6 +5,7 @@ import com.tt.models.Company
 import com.tt.plugins.checkBasicAuthenticated
 import com.tt.plugins.makeResponse
 import com.tt.services.CompanyService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode
 import io.ktor.resources.Resource
 import io.ktor.server.application.Application
@@ -15,7 +16,6 @@ import io.ktor.server.resources.get
 import io.ktor.server.resources.post
 import io.ktor.server.resources.put
 import io.ktor.server.routing.routing
-import mu.KotlinLogging
 import org.koin.ktor.ext.inject
 
 @Resource("/company")

@@ -1,10 +1,10 @@
 package com.tt.plugins
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.cors.routing.CORS
-import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
@@ -16,7 +16,7 @@ fun Application.configureCors() {
                 .config("ktor.cors")
                 .property("allowedHost")
                 .getString()
-        logger.info("allowedHost: $allowedHost")
+        logger.info { "allowedHost: $allowedHost" }
         allowNonSimpleContentTypes = true
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)

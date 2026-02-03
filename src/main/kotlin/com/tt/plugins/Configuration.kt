@@ -1,7 +1,7 @@
 package com.tt.plugins
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.config.ApplicationConfig
-import mu.KotlinLogging
 import org.koin.dsl.module
 import java.util.Properties
 

@@ -27,7 +27,7 @@ class CompanyService(
         either {
             catch(
                 {
-                    ensure(fetchDummyData(businessId).value == 1) { SomeFailure("Value is not 1") }
+//                    ensure(fetchDummyData(businessId).value == 1) { SomeFailure("Value is not 1") }
                     ensureNotNull(companyRepository.getCompany(dsl, businessId)) { NotFoundFailure("Company $businessId doesn't exist") }
                 },
                 { raise(DbFailure(it)) },

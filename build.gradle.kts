@@ -2,22 +2,22 @@ import dev.monosoul.jooq.RecommendedVersions
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val ktorVersion = "2.3.11"
+val ktorVersion = "3.3.1"
 val logbackVersion = "1.4.14"
 val postgresqlVersion = "42.7.3"
 val hikaricpVersion = "5.0.1"
 val jacksonVersion = "2.15.1"
 val flywayVersion = "10.13.0"
 val testcontainersVersion = "1.19.7"
-val kotestVersion = "5.7.2"
+val kotestVersion = "5.9.1"
 val kotestVersionArrow = "1.4.0"
-val mockkVersion = "1.13.12"
-val arrowKtVersion = "1.2.0"
+val mockkVersion = "1.14.6"
+val arrowKtVersion = "2.2.0"
 
 plugins {
-    kotlin("jvm") version "2.2.0"
-    id("io.ktor.plugin") version "2.3.4"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+    kotlin("jvm") version "2.2.21"
+    id("io.ktor.plugin") version "3.3.1"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.21"
     id("dev.monosoul.jooq-docker") version "5.0.6"
     id("java")
     id("org.flywaydb.flyway") version "9.22.0"
@@ -80,7 +80,7 @@ dependencies {
     jooqCodegen("org.postgresql:postgresql:$postgresqlVersion")
 
     // Other
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     // Arrow.kt
@@ -95,7 +95,7 @@ dependencies {
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.0")
-    testImplementation("io.ktor:ktor-server-tests-jvm")
+    testImplementation("io.ktor:ktor-server-test-host:${ktorVersion}")
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.testcontainers:postgresql:$testcontainersVersion")

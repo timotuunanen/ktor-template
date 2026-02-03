@@ -12,12 +12,12 @@ import com.tt.plugins.myDb
 import com.tt.plugins.myRepositories
 import com.tt.plugins.myServices
 import com.tt.plugins.readConfiguration
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.resources.Resources
-import mu.KotlinLogging
 import org.koin.ktor.plugin.Koin
 
 private val logger = KotlinLogging.logger {}

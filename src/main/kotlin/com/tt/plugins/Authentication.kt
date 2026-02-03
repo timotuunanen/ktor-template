@@ -1,5 +1,6 @@
 package com.tt.plugins
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
@@ -7,7 +8,6 @@ import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.basic
 import io.ktor.server.routing.Route
-import mu.KotlinLogging
 import org.koin.ktor.ext.inject
 
 private val logger = KotlinLogging.logger {}
